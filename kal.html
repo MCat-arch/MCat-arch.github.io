@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    margin: 0;
+  }
+  .container {
+    width: 90%;
+    max-width: 400px;
+    background-color: #efefef;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  button {
+    width: calc(100% - 20px);
+    padding: 12px 0;
+    margin: 10px 0;
+    background-color: #82b984;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-sizing: border-box;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  #result {
+    font-size: 24px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Simplify Fraction</h2>
+
+  <input type="number" id="numerator" placeholder="Enter numerator" onkeypress="return handleEnter(event, 'denominator')">
+  <br>
+  <input type="number" id="denominator" placeholder="Enter denominator" onkeypress="return handleEnter(event, 'calculate')">
+  <br>
+  <button id="calculate" onclick="simplifyFraction()">Simplify</button>
+  <button id="reset" onclick="resetValues()">Reset</button>
+
+  <p id="result"></p>
+</div>
+
+<script>
+var step = 1;
+
+function handleEnter(event, nextElement) {
+  if (event.key === "Enter") {
+    if (step === 1) {
+      document.getElementById("denominator").focus();
+      step = 2;
+    } else if (step === 2) {
+      simplifyFraction();
+      step = 3;
+    } else if (step === 3) {
+      resetValues();
+      step = 1;
+      document.getElementById("numerator").focus();
+    }
+    return false;
+  }
+  return true;
+}
+
+function simplifyFraction() {
+  var numerator = parseInt(document.getElementById("numerator").value);
+  var denominator = parseInt(document.getElementById("denominator").value);
+  var result = document.getElementById("result");
+
+  if (isNaN(numerator) || isNaN(denominator)) {
+    result.innerHTML = "Please enter valid numbers.";
+    return;
+  }
+
+  if (denominator === 0) {
+    result.innerHTML = "Denominator cannot be zero.";
+    return;
+  }
+
+  var gcd = findGCD(numerator, denominator);
+  var simplifiedNumerator = numerator / gcd;
+  var simplifiedDenominator = denominator / gcd;
+
+  result.innerHTML = simplifiedNumerator + "/" + simplifiedDenominator;
+}
+
+function resetValues() {
+  document.getElementById("numerator").value = "";
+  document.getElementById("denominator").value = "";
+  document.getElementById("result").innerHTML = "";
+}
+
+function findGCD(x, y) {
+  if (y === 0) {
+    return x;
+  } else {
+    return findGCD(y, x % y);
+  }
+}
+</script>
+
+</body>
+</html>
